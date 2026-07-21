@@ -110,6 +110,31 @@
     .num{display:block;font-size:clamp(21px,6vw,34px);font-weight:900;color:var(--pink)}
     .lab{font-size:11px;color:#8b6273;text-transform:uppercase}
     .since{margin-top:14px;line-height:1.55;color:#72475a;font-weight:650}
+
+    .love-meter{
+      width:min(100%,560px);margin:18px 0 2px;padding:24px 20px;
+      border:1px solid rgba(255,255,255,.9);border-radius:26px;
+      background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,236,244,.72));
+      box-shadow:0 16px 38px rgba(126,38,73,.12);overflow:hidden;position:relative
+    }
+    .love-meter:before{
+      content:"";position:absolute;width:170px;height:170px;border-radius:50%;
+      right:-75px;top:-90px;background:radial-gradient(circle,rgba(255,107,154,.24),transparent 68%);pointer-events:none
+    }
+    .love-meter h3{margin:0 0 7px;font-size:clamp(22px,6vw,30px);color:var(--deep)}
+    .love-meter p{margin:0 0 18px;color:#805167;line-height:1.5}
+    .love-value{font-size:clamp(42px,11vw,68px);font-weight:950;color:var(--pink);line-height:1;margin:4px 0 18px;text-shadow:0 8px 24px rgba(214,51,108,.16)}
+    .love-slider{width:100%;height:34px;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer}
+    .love-slider::-webkit-slider-runnable-track{height:12px;border-radius:99px;background:linear-gradient(90deg,var(--pink) 0 var(--love,50%),#f2dce5 var(--love,50%) 100%);box-shadow:inset 0 2px 5px rgba(95,32,59,.12)}
+    .love-slider::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;margin-top:-10px;border:4px solid #fff;border-radius:50%;background:var(--pink);box-shadow:0 7px 18px rgba(214,51,108,.34)}
+    .love-slider::-moz-range-track{height:12px;border-radius:99px;background:#f2dce5}
+    .love-slider::-moz-range-progress{height:12px;border-radius:99px;background:var(--pink)}
+    .love-slider::-moz-range-thumb{width:25px;height:25px;border:4px solid #fff;border-radius:50%;background:var(--pink);box-shadow:0 7px 18px rgba(214,51,108,.34)}
+    .love-scale{display:flex;justify-content:space-between;margin-top:-2px;color:#a06a80;font-size:14px;font-weight:750}
+    .love-send{margin-top:18px}
+    .love-send[disabled]{opacity:.65;cursor:default;box-shadow:none}
+    .love-answer{display:none;margin-top:16px;font-size:18px;font-weight:850;color:var(--deep)}
+    .love-answer.show{display:block;animation:enter .55s}
     .hug{margin-top:22px}
     .hug-result{display:none;font-size:72px;margin-top:20px}
     .hug-result.show{display:block;animation:pulse .7s infinite alternate}
@@ -194,6 +219,17 @@
             <div class="unit"><span class="num" id="seconds">0</span><span class="lab">Saniye</span></div>
           </div>
           <div class="since" id="sinceText"></div>
+        </div>
+
+
+        <div class="love-meter" id="loveMeter">
+          <h3>Son bir sorum var… ❤️</h3>
+          <p>Beni ne kadar seviyorsun?</p>
+          <div class="love-value" id="loveValue">%50</div>
+          <input class="love-slider" id="loveSlider" type="range" min="0" max="100" value="50" aria-label="Sevgi yüzdesi">
+          <div class="love-scale"><span>Biraz 🤍</span><span>Çok ❤️</span></div>
+          <button class="primary love-send" id="sendLove" type="button">Cevabımı Gönder 💌</button>
+          <div class="love-answer" id="loveAnswer"></div>
         </div>
 
         <button class="primary hug" id="hug">Bir Daha Sarılalım mı? 🤗</button>
@@ -340,6 +376,29 @@ Beni affedebilir misin? ❤️`;
     notifyTelegram("❤️ EVET butonuna bastı!");
     show("result");burst();updateCountdown();
   };
+
+  const loveSlider=$("loveSlider"), loveValue=$("loveValue"), sendLove=$("sendLove");
+  function updateLoveMeter(){
+    const value=Number(loveSlider.value);
+    loveValue.textContent=`%${value}`;
+    loveSlider.style.setProperty("--love",`${value}%`);
+    const scale=.92+(value/100)*.22;
+    loveValue.style.transform=`scale(${scale})`;
+  }
+  loveSlider.addEventListener("input",updateLoveMeter);
+  updateLoveMeter();
+  sendLove.onclick=()=>{
+    const value=Number(loveSlider.value);
+    notifyTelegram(`💖 Sevgi ölçer cevabı: %${value}`);
+    sendLove.disabled=true;
+    loveSlider.disabled=true;
+    sendLove.textContent="Cevabın Gönderildi ❤️";
+    $("loveAnswer").textContent=`Beni %${value} seviyorsun… Bu cevabı kalbimde saklayacağım. ❤️`;
+    $("loveAnswer").classList.add("show");
+    if(navigator.vibrate)navigator.vibrate(70);
+    burst();
+  };
+
   $("hug").onclick=()=>{
     notifyTelegram("🤗 ‘Bir Daha Sarılalım mı?’ butonuna bastı ve sayfanın sonuna geldi.");
     if(navigator.vibrate)navigator.vibrate([80,50,120]);
