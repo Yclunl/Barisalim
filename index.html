@@ -1,625 +1,337 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f8dbe6" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>Sana Küçük Bir Mesajım Var ❤️</title>
-
+  <meta name="theme-color" content="#fff4f7" />
+  <title>Hayatımdaki En Değerli İnsana ❤️</title>
   <style>
-    :root {
-      --pembe: #d93672;
-      --koyu-pembe: #a72858;
-      --acik-pembe: #fff2f6;
-      --yesil: #43ad68;
-      --golge: 0 22px 60px rgba(151, 46, 88, 0.22);
+    :root{
+      --pink:#d6336c; --pink2:#ff6b9a; --deep:#8c254c; --cream:#fffaf7;
+      --glass:rgba(255,255,255,.78); --shadow:0 24px 70px rgba(123,36,75,.18);
     }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      width: 100%;
-      min-height: 100%;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;color:#57243a}
+    body{
+      min-height:100svh; overflow-x:hidden;
       background:
-        radial-gradient(circle at 15% 10%, rgba(255,255,255,.95), transparent 28%),
-        radial-gradient(circle at 85% 15%, rgba(255,255,255,.7), transparent 24%),
-        linear-gradient(160deg, #fff8fb 0%, #f8dce7 46%, #f4c8d8 100%);
-      color: var(--koyu-pembe);
+        radial-gradient(circle at 20% 15%,rgba(255,255,255,.95),transparent 25%),
+        radial-gradient(circle at 80% 10%,rgba(255,220,232,.8),transparent 28%),
+        linear-gradient(145deg,#fff9fb,#ffe4ed 50%,#fff6f1);
     }
-
-    body {
-      min-height: 100dvh;
-      touch-action: manipulation;
+    button{font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .bg,.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+    .float{
+      position:absolute;bottom:-80px;opacity:0;
+      animation:rise linear forwards;filter:drop-shadow(0 4px 7px rgba(100,40,70,.12));
     }
-
-    .parilti {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 2px),
-        radial-gradient(circle, rgba(255,255,255,.6) 0 1px, transparent 2px);
-      background-size: 45px 45px, 72px 72px;
-      background-position: 0 0, 18px 26px;
-      animation: parilti 5s ease-in-out infinite alternate;
+    @keyframes rise{
+      0%{transform:translate3d(0,0,0) rotate(0);opacity:0}
+      12%{opacity:.88}
+      100%{transform:translate3d(var(--drift),-120vh,0) rotate(360deg);opacity:0}
     }
-
-    .ucusanlar {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      overflow: hidden;
-      pointer-events: none;
+    .app{position:relative;z-index:2;min-height:100svh;display:grid;place-items:center;padding:20px 14px calc(20px + env(safe-area-inset-bottom))}
+    .card{
+      width:min(94vw,720px);min-height:min(760px,92svh);
+      border:1px solid rgba(255,255,255,.9);border-radius:34px;background:var(--glass);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:var(--shadow);
+      overflow:hidden;position:relative;
     }
-
-    .ucan {
-      position: absolute;
-      bottom: -90px;
-      opacity: 0;
-      filter: drop-shadow(0 5px 8px rgba(0,0,0,.08));
-      animation: yukari linear forwards;
+    .screen{
+      display:none;min-height:min(760px,92svh);padding:34px 24px;
+      flex-direction:column;align-items:center;justify-content:center;text-align:center;
+      animation:enter .7s cubic-bezier(.2,.7,.2,1);
     }
-
-    .sayfa {
-      position: relative;
-      z-index: 3;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding:
-        max(16px, env(safe-area-inset-top))
-        max(16px, env(safe-area-inset-right))
-        max(16px, env(safe-area-inset-bottom))
-        max(16px, env(safe-area-inset-left));
+    .screen.active{display:flex}
+    @keyframes enter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+    .music{
+      position:absolute;right:15px;top:15px;z-index:10;border:0;border-radius:999px;
+      width:44px;height:44px;background:rgba(255,255,255,.86);box-shadow:0 8px 24px rgba(100,25,60,.15);
+      display:none;cursor:pointer
     }
-
-    .kart {
-      position: relative;
-      width: min(93vw, 480px);
-      min-height: 570px;
-      padding: 28px 20px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.95);
-      border-radius: 34px;
-      background: rgba(255,255,255,.82);
-      box-shadow: var(--golge);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      text-align: center;
+    .music.show{display:block}
+    h1,h2,p{margin-top:0}
+    h1{font-size:clamp(31px,7vw,54px);line-height:1.08;color:var(--deep);letter-spacing:-1px}
+    .sub{font-size:clamp(16px,4vw,20px);line-height:1.65;color:#805167;max-width:560px}
+    .primary{
+      border:0;border-radius:999px;padding:15px 25px;color:#fff;font-weight:800;font-size:18px;
+      background:linear-gradient(135deg,var(--pink),var(--pink2));box-shadow:0 14px 28px rgba(214,51,108,.3);
+      cursor:pointer;transition:.2s transform,.2s box-shadow
     }
+    .primary:active{transform:scale(.96)}
+    .envelope{width:min(70vw,300px);height:190px;position:relative;margin:5px 0 34px;animation:sway 2.8s ease-in-out infinite}
+    .env-back{position:absolute;inset:20px 0 0;border-radius:18px;background:linear-gradient(145deg,#f6b9ca,#f197b2);box-shadow:0 22px 45px rgba(139,42,82,.22)}
+    .env-front{position:absolute;left:0;right:0;bottom:0;height:145px;overflow:hidden;border-radius:0 0 18px 18px}
+    .env-front:before,.env-front:after{content:"";position:absolute;width:210px;height:210px;background:#ffc7d7;bottom:-113px;transform:rotate(45deg)}
+    .env-front:before{left:-104px}.env-front:after{right:-104px;background:#f9aec5}
+    .flap{position:absolute;z-index:2;top:20px;left:0;width:100%;height:145px;clip-path:polygon(0 0,100% 0,50% 87%);background:#ffd1dd;transform-origin:top;transition:transform .9s}
+    .heart-seal{position:absolute;z-index:4;left:50%;top:103px;transform:translate(-50%,-50%);font-size:45px;filter:drop-shadow(0 5px 8px rgba(90,20,50,.2))}
+    @keyframes sway{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-8px)}}
+    .intro-title{min-height:1.3em}
 
-    .ekran {
-      display: none;
-      min-height: 510px;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      animation: ekranGel .7s cubic-bezier(.2,.8,.2,1);
+    .letter-screen{justify-content:flex-start;overflow-y:auto;padding-top:75px;padding-bottom:48px}
+    .paper{
+      width:min(100%,590px);background:#fffdf9;border-radius:9px;padding:38px clamp(20px,6vw,46px);
+      box-shadow:0 20px 55px rgba(100,40,65,.15);text-align:left;position:relative;
+      background-image:linear-gradient(rgba(205,145,160,.12) 1px,transparent 1px);
+      background-size:100% 31px;
     }
+    .paper:before{content:"💌";position:absolute;right:18px;top:15px;font-size:28px}
+    .letter-text{white-space:pre-line;font-family:Georgia,"Times New Roman",serif;font-size:clamp(17px,4vw,21px);line-height:1.72;color:#553342}
+    .letter-next{margin-top:28px;display:none}
+    .letter-next.show{display:inline-block;animation:enter .5s}
 
-    .ekran.aktif {
-      display: flex;
+    .timeline{width:min(100%,560px);text-align:left;margin:6px auto 24px}
+    .event{position:relative;padding:0 0 27px 42px}
+    .event:before{content:"";position:absolute;left:14px;top:8px;bottom:-3px;width:2px;background:linear-gradient(var(--pink2),#f5c6d4)}
+    .event:last-child:before{display:none}
+    .dot{position:absolute;left:5px;top:4px;width:20px;height:20px;background:#fff;border:5px solid var(--pink);border-radius:50%;box-shadow:0 0 0 5px rgba(255,107,154,.14)}
+    .event b{display:block;color:var(--pink);font-size:17px;margin-bottom:5px}
+    .event span{line-height:1.55;color:#684355}
+    .future{opacity:.88}
+
+    .question-icon{font-size:70px;animation:pulse .85s infinite alternate}
+    @keyframes pulse{to{transform:scale(1.15)}}
+    .choice-area{width:min(100%,500px);height:235px;position:relative;margin-top:14px}
+    .choice{position:absolute;top:65px;width:145px;border:0;border-radius:999px;padding:14px;font-weight:850;font-size:18px;cursor:pointer}
+    #yes{left:50%;transform:translateX(-105%);background:linear-gradient(135deg,#2fbf71,#69d994);color:#fff;box-shadow:0 12px 25px rgba(47,191,113,.28)}
+    #no{left:50%;transform:translateX(5%);background:#fff;color:#b42d5f;box-shadow:0 10px 25px rgba(110,30,65,.15);transition:left .16s,top .16s}
+    .hint{min-height:28px;color:#94516d;font-weight:700}
+
+    .polaroid{background:#fff;padding:12px 12px 50px;width:min(83vw,340px);box-shadow:0 23px 50px rgba(55,20,35,.22);transform:rotate(-2deg);animation:drop .9s cubic-bezier(.2,.8,.2,1)}
+    .photo{display:block;width:100%;height:330px;object-fit:cover;background:#f6e6ec}
+    .polaroid-label{font-family:"Comic Sans MS",cursive;margin-top:15px;font-size:24px;color:#72364e}
+    @keyframes drop{from{opacity:0;transform:translateY(-60px) rotate(8deg) scale(.75)}to{opacity:1;transform:rotate(-2deg)}}
+    .final-title{font-size:clamp(37px,10vw,60px);margin:25px 0 8px;color:var(--pink)}
+    .countdown{width:min(100%,560px);margin:25px 0 8px;background:rgba(255,255,255,.68);border-radius:24px;padding:20px}
+    .count-title{font-weight:850;color:var(--deep);margin-bottom:13px;font-size:18px}
+    .count-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .unit{background:#fff;border-radius:15px;padding:12px 4px;box-shadow:0 7px 18px rgba(100,35,60,.08)}
+    .num{display:block;font-size:clamp(21px,6vw,34px);font-weight:900;color:var(--pink)}
+    .lab{font-size:11px;color:#8b6273;text-transform:uppercase}
+    .since{margin-top:14px;line-height:1.55;color:#72475a;font-weight:650}
+    .hug{margin-top:22px}
+    .hug-result{display:none;font-size:72px;margin-top:20px}
+    .hug-result.show{display:block;animation:pulse .7s infinite alternate}
+    .forever{display:none;margin-top:15px;font-size:clamp(24px,7vw,38px);font-weight:900;color:var(--deep)}
+    .forever.show{display:block;animation:enter .8s}
+    .confetti-piece{position:absolute;top:-30px;width:11px;height:18px;border-radius:3px;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(115vh) rotate(760deg);opacity:0}}
+    @media(max-width:430px){
+      .card,.screen{min-height:calc(100svh - 24px)}
+      .screen{padding:29px 16px}
+      .letter-screen{padding-top:65px}
+      .paper{padding-top:45px}
+      .photo{height:min(78vw,330px)}
+      .count-grid{gap:5px}.unit{padding:10px 2px}
+      .choice{width:130px}
     }
-
-    .zarf {
-      position: relative;
-      width: 190px;
-      height: 132px;
-      margin-bottom: 35px;
-      border-radius: 10px;
-      background: linear-gradient(145deg, #f78caf, #e64e82);
-      box-shadow: 0 18px 30px rgba(219, 54, 114, .25);
-      animation: zarfSallan 2.3s ease-in-out infinite;
-    }
-
-    .zarf::before,
-    .zarf::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 10px;
-    }
-
-    .zarf::before {
-      clip-path: polygon(0 0, 50% 55%, 100% 0);
-      background: #ffabc5;
-    }
-
-    .zarf::after {
-      clip-path: polygon(0 100%, 50% 48%, 100% 100%);
-      background: #d93a70;
-    }
-
-    .zarf-kalp {
-      position: absolute;
-      z-index: 3;
-      left: 50%;
-      top: 52%;
-      transform: translate(-50%, -50%);
-      font-size: 48px;
-      animation: kalpAtisi .8s infinite alternate;
-    }
-
-    h1 {
-      margin: 0 0 16px;
-      color: var(--pembe);
-      font-size: clamp(34px, 9vw, 49px);
-      line-height: 1.12;
-      letter-spacing: -.7px;
-    }
-
-    .daktilo {
-      min-height: 64px;
-    }
-
-    .aciklama {
-      margin: 0 0 27px;
-      color: #8e4b64;
-      font-size: 18px;
-      line-height: 1.55;
-    }
-
-    button {
-      border: 0;
-      min-width: 145px;
-      min-height: 57px;
-      padding: 14px 24px;
-      border-radius: 999px;
-      font-size: 18px;
-      font-weight: 850;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .ana-buton {
-      color: #fff;
-      background: linear-gradient(135deg, #ef6190, #cf2e67);
-      box-shadow: 0 11px 25px rgba(207,46,103,.3);
-      animation: butonNefes 1.7s ease-in-out infinite;
-    }
-
-    .muzik-kontrol {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      z-index: 8;
-      display: none;
-      min-width: 44px;
-      min-height: 44px;
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      border-radius: 50%;
-      color: #fff;
-      background: rgba(216, 52, 112, .8);
-      box-shadow: 0 7px 16px rgba(160, 40, 80, .2);
-      font-size: 19px;
-    }
-
-    .soru-ikon {
-      font-size: 75px;
-      margin-bottom: 10px;
-      animation: kalpAtisi .8s infinite alternate;
-    }
-
-    #altMetin {
-      min-height: 54px;
-      margin: 5px 0 15px;
-      color: #8e4b64;
-      font-size: 18px;
-      font-weight: 750;
-    }
-
-    .buton-alani {
-      position: relative;
-      width: 100%;
-      min-height: 235px;
-      margin-top: 4px;
-    }
-
-    #evet, #hayir {
-      position: absolute;
-      top: 24px;
-      width: 138px;
-      min-width: 138px;
-    }
-
-    #evet {
-      left: 50%;
-      transform: translateX(-112%);
-      color: #fff;
-      background: linear-gradient(135deg, #55bd76, #319e59);
-      box-shadow: 0 10px 22px rgba(49,158,89,.3);
-    }
-
-    #hayir {
-      left: 50%;
-      transform: translateX(12%);
-      color: #fff;
-      background: linear-gradient(135deg, #f47792, #e54b6d);
-      box-shadow: 0 10px 22px rgba(229,75,109,.27);
-      transition: left .11s ease, top .11s ease, transform .11s ease;
-    }
-
-    .polaroid {
-      position: relative;
-      width: min(79vw, 315px);
-      padding: 10px 10px 24px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 18px 42px rgba(0,0,0,.2);
-      transform: rotate(-2deg);
-      animation: fotografGel .9s cubic-bezier(.16,1,.3,1);
-    }
-
-    .foto {
-      display: block;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 4px;
-      background: #f4dbe4;
-    }
-
-    .polaroid-yazi {
-      margin-top: 15px;
-      color: #b52e5d;
-      font-family: "Segoe Print", "Comic Sans MS", cursive;
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .son-kalp {
-      margin-top: 18px;
-      font-size: 62px;
-      animation: kalpAtisi .75s infinite alternate;
-    }
-
-    .son-mesaj {
-      margin-top: 5px;
-      color: var(--pembe);
-      font-size: clamp(36px, 10vw, 53px);
-      font-weight: 900;
-    }
-
-    .son-alt {
-      margin-top: 8px;
-      color: #8e4b64;
-      font-size: 18px;
-      line-height: 1.45;
-    }
-
-    .konfeti {
-      position: fixed;
-      top: -30px;
-      z-index: 10;
-      pointer-events: none;
-      animation: konfetiDus 3s linear forwards;
-    }
-
-    @keyframes ekranGel {
-      from { opacity: 0; transform: translateY(22px) scale(.94); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes fotografGel {
-      from { opacity: 0; transform: translateY(45px) rotate(-8deg) scale(.78); }
-      to { opacity: 1; transform: translateY(0) rotate(-2deg) scale(1); }
-    }
-
-    @keyframes kalpAtisi {
-      from { transform: scale(1); }
-      to { transform: scale(1.18); }
-    }
-
-    @keyframes zarfSallan {
-      0%, 100% { transform: rotate(-2deg) translateY(0); }
-      50% { transform: rotate(2deg) translateY(-8px); }
-    }
-
-    @keyframes butonNefes {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.055); }
-    }
-
-    @keyframes yukari {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-      12% { opacity: .95; }
-      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
-    }
-
-    @keyframes konfetiDus {
-      from { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-
-    @keyframes parilti {
-      from { opacity: .45; transform: scale(1); }
-      to { opacity: .85; transform: scale(1.04); }
-    }
-
-    @media (max-width: 390px) {
-      .kart {
-        min-height: 590px;
-        padding-left: 13px;
-        padding-right: 13px;
-      }
-
-      .ekran {
-        min-height: 525px;
-      }
-
-      #evet, #hayir {
-        width: 126px;
-        min-width: 126px;
-        font-size: 17px;
-      }
-
-      #evet {
-        left: 48%;
-        transform: translateX(-100%);
-      }
-
-      #hayir {
-        left: 52%;
-        transform: translateX(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-      }
-    }
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
   </style>
 </head>
-
 <body>
-  <div class="parilti"></div>
-  <div class="ucusanlar" id="ucusanlar"></div>
+  <div class="bg" id="bg"></div>
+  <div class="confetti" id="confetti"></div>
 
-  <!-- İsteğe bağlı: Aynı klasöre muzik.mp3 koyarsan Devam Et'e basınca çalar. -->
-  <audio id="muzik" loop preload="none">
-    <source src="muzik.mp3" type="audio/mpeg" />
-  </audio>
+  <main class="app">
+    <section class="card">
+      <button class="music" id="musicBtn" type="button" aria-label="Müziği aç veya kapat">🔊</button>
 
-  <main class="sayfa">
-    <section class="kart">
-      <button class="muzik-kontrol" id="muzikKontrol" type="button" aria-label="Müziği aç veya kapat">🔊</button>
-
-      <div class="ekran aktif" id="girisEkrani">
-        <div class="zarf" aria-hidden="true">
-          <div class="zarf-kalp">❤️</div>
+      <div class="screen active" id="intro">
+        <div class="envelope">
+          <div class="env-back"></div><div class="flap"></div><div class="env-front"></div><div class="heart-seal">❤️</div>
         </div>
-        <h1 class="daktilo" id="daktiloYazi"></h1>
-        <p class="aciklama">Sana kalbimden gelen küçük bir şey hazırladım…</p>
-        <button class="ana-buton" id="devam" type="button">Mektubu Aç 💌</button>
+        <h1 class="intro-title" id="typedTitle"></h1>
+        <p class="sub">Sana kalbimden gelen küçük bir mektup hazırladım…</p>
+        <button class="primary" id="openLetter">Mektubu Aç 💌</button>
       </div>
 
-      <div class="ekran" id="soruEkrani">
-        <div class="soru-ikon">💗</div>
+      <div class="screen letter-screen" id="letter">
+        <div class="paper">
+          <div class="letter-text" id="letterText"></div>
+        </div>
+        <button class="primary letter-next" id="toTimeline">Devam Et ❤️</button>
+      </div>
+
+      <div class="screen" id="timelineScreen">
+        <h1>Bizim Hikâyemiz ❤️</h1>
+        <div class="timeline">
+          <div class="event"><i class="dot"></i><b>13 Ağustos 2025</b><span>Cesaretimi toplayıp sana ilk kez hislerimi anlattığım gün. Cevabın henüz “evet” değildi ama hikâyemizin ilk sayfası o gün açıldı.</span></div>
+          <div class="event"><i class="dot"></i><b>16 Eylül 2025</b><span>İlk kez el ele tuttuğumuz ve birbirimize ilk kez gerçekten yakınlaştığımız gün. O günden beri elini hiç bırakmak istemedim.</span></div>
+          <div class="event"><i class="dot"></i><b>4 Ocak 2026</b><span>Sana hayatımın en önemli sorusunu sordum ve dünyanın en güzel cevabını aldım. 💍</span></div>
+          <div class="event"><i class="dot"></i><b>1 Mayıs 2026</b><span>Birbirimize verdiğimiz sözü ailelerimizin ve sevdiklerimizin önünde taçlandırdığımız gün. 🌸</span></div>
+          <div class="event future"><i class="dot"></i><b>2 Ağustos 2026 · 11:15</b><span>Resmen aynı hayatın ve aynı geleceğin iki parçası olacağımız nikâh günümüz. ❤️</span></div>
+          <div class="event future"><i class="dot"></i><b>2 Ekim 2026</b><span>Hikâyemizi bütün sevdiklerimizle kutlayacağımız düğünümüz. 🎊</span></div>
+        </div>
+        <button class="primary" id="toQuestion">Son Bir Soru…</button>
+      </div>
+
+      <div class="screen" id="question">
+        <div class="question-icon">💗</div>
         <h1>Benimle barışır mısın?</h1>
-        <div id="altMetin">Bence kalbinin cevabı belli 😊</div>
-
-        <div class="buton-alani" id="butonAlani">
-          <button id="evet" type="button">Evet ❤️</button>
-          <button id="hayir" type="button">Hayır</button>
+        <div class="hint" id="hint">Kalbimin cevabı hep sensin…</div>
+        <div class="choice-area" id="choiceArea">
+          <button class="choice" id="yes">Evet ❤️</button>
+          <button class="choice" id="no">Hayır</button>
         </div>
       </div>
 
-      <div class="ekran" id="sonucEkrani">
+      <div class="screen" id="result">
         <div class="polaroid">
-          <img
-            class="foto"
-            src="foto.jpeg"
-            alt="İkimizin fotoğrafı"
-            onerror="this.style.display='none'; document.getElementById('fotoUyari').style.display='block';"
-          />
-          <div id="fotoUyari" style="display:none; padding:45px 12px; color:#a72858; font-weight:700;">
-            Fotoğrafı <b>foto.jpeg</b> adıyla aynı klasöre koy ❤️
+          <img class="photo" src="foto.jpeg" alt="İkimizin fotoğrafı" onerror="this.style.display='none';document.getElementById('photoWarn').style.display='block'">
+          <div id="photoWarn" style="display:none;padding:75px 12px;color:#a83260;font-weight:800">Fotoğrafı <b>foto.jpeg</b> adıyla aynı klasöre koy ❤️</div>
+          <div class="polaroid-label">Sen & Ben ❤️</div>
+        </div>
+        <h2 class="final-title">İyi ki varsın</h2>
+        <p class="sub">Seni bugün, yarın ve her zaman çok seviyorum.</p>
+
+        <div class="countdown">
+          <div class="count-title" id="countTitle">Nikâhımıza kalan süre 💍</div>
+          <div class="count-grid">
+            <div class="unit"><span class="num" id="days">0</span><span class="lab">Gün</span></div>
+            <div class="unit"><span class="num" id="hours">0</span><span class="lab">Saat</span></div>
+            <div class="unit"><span class="num" id="minutes">0</span><span class="lab">Dakika</span></div>
+            <div class="unit"><span class="num" id="seconds">0</span><span class="lab">Saniye</span></div>
           </div>
-          <div class="polaroid-yazi">Sen & Ben ❤️</div>
+          <div class="since" id="sinceText"></div>
         </div>
 
-        <div class="son-kalp">❤️</div>
-        <div class="son-mesaj">İyi ki varsın</div>
-        <div class="son-alt">Seni bugün, yarın ve her zaman çok seviyorum.</div>
+        <button class="primary hug" id="hug">Bir Daha Sarılalım mı? 🤗</button>
+        <div class="hug-result" id="hugResult">🤗</div>
+        <div class="forever" id="forever">Sonsuza kadar…<br>Sen & Ben ♾️❤️</div>
       </div>
     </section>
   </main>
 
-  <script>
-    const girisEkrani = document.getElementById("girisEkrani");
-    const soruEkrani = document.getElementById("soruEkrani");
-    const sonucEkrani = document.getElementById("sonucEkrani");
-    const devam = document.getElementById("devam");
-    const evet = document.getElementById("evet");
-    const hayir = document.getElementById("hayir");
-    const altMetin = document.getElementById("altMetin");
-    const butonAlani = document.getElementById("butonAlani");
-    const ucusanlar = document.getElementById("ucusanlar");
-    const muzik = document.getElementById("muzik");
-    const muzikKontrol = document.getElementById("muzikKontrol");
-    const daktiloYazi = document.getElementById("daktiloYazi");
+<script>
+  const $ = id => document.getElementById(id);
+  const screens = ["intro","letter","timelineScreen","question","result"];
+  function show(id){
+    screens.forEach(x => $(x).classList.toggle("active", x===id));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 
-    const acilisMetni = "Hayatım, seni çok seviyorum";
-    const hayirMesajlari = [
-      "Emin misin? 🥺",
-      "Bir daha düşünür müsün? 😢",
-      "Kalbimi kırma lütfen 💔",
-      "Son kararın mı gerçekten? 🌼",
-      "Tamam, artık Hayır'a basamazsın 😄"
-    ];
+  const title = "Hayatımdaki en değerli insana… ❤️";
+  let ti=0;
+  (function typeTitle(){ if(ti<=title.length){$("typedTitle").textContent=title.slice(0,ti++);setTimeout(typeTitle,65);} })();
 
-    let yazimIndex = 0;
-    let hayirSayaci = 0;
-    let kacisModu = false;
-    let sonKacis = 0;
-    let muzikCalabiliyor = false;
-    let muzikAcik = false;
-    let ucusDongusu = null;
+  const letter = `Hayatım,
 
-    function daktiloYaz() {
-      if (yazimIndex < acilisMetni.length) {
-        daktiloYazi.textContent += acilisMetni.charAt(yazimIndex);
-        yazimIndex++;
-        setTimeout(daktiloYaz, 75);
-      }
+Seni yaklaşık 17 yıldır tanıyorum.
+
+Aynı şehirde, aynı hayatta yıllarca yollarımız kesişti ama ben kalbimde olanı söyleyebilmek için doğru zamanı bekledim.
+
+13 Ağustos 2025…
+
+Cesaretimi toplayıp sana ilk kez hislerimi anlattığım gündü. O gün cevabın istediğim gibi olmadı ama içimdeki umut hiç bitmedi.
+
+Sonra 16 Eylül 2025 geldi.
+
+O gün ilk kez elini tuttum. Sana ilk kez gerçekten bu kadar yakın oldum. O an sadece elini değil, kalbimi de sana emanet ettiğimi hissettim.
+
+4 Ocak 2026’da sana hayatımın en önemli sorusunu sordum ve sen bana dünyanın en güzel cevabını verdin.
+
+1 Mayıs 2026’da birbirimize verdiğimiz sözü ailelerimizin önünde taçlandırdık.
+
+Şimdi 2 Ağustos 2026 saat 11:15’te aynı hayata “Evet” diyeceğimiz nikâhımızı ve 2 Ekim 2026’daki düğünümüzü bekliyoruz.
+
+Hayatım…
+
+Son zamanlarda seni çok üzdüğümü biliyorum. Bunun için gerçekten çok üzgünüm. Seni kırmak hiçbir zaman istemedim.
+
+Keşke zamanı geri alabilsem. Ama elimden gelen, bundan sonra seni daha çok mutlu etmeye çalışmak ve sana sevgimi her gün yeniden göstermek.
+
+Çünkü sen benim evim gibisin. Yanındayken her şey daha güzel geliyor. Gülüşünü kaybetmek, kalbini kırık bırakmak istemiyorum.
+
+Seni çok seviyorum.
+
+Beni affedebilir misin? ❤️`;
+
+  let audioCtx=null, musicOn=false, musicTimer=null, master=null;
+  function startMusic(){
+    if(musicOn) return;
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    master = audioCtx.createGain(); master.gain.value=.055; master.connect(audioCtx.destination);
+    musicOn=true; $("musicBtn").classList.add("show"); $("musicBtn").textContent="🔊";
+    const scale=[261.63,329.63,392,493.88,440,392,329.63,293.66];
+    let step=0;
+    function playNote(){
+      if(!musicOn) return;
+      const now=audioCtx.currentTime, osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+      osc.type="sine"; osc.frequency.value=scale[step++%scale.length]/2;
+      gain.gain.setValueAtTime(0,now); gain.gain.linearRampToValueAtTime(.8,now+.08); gain.gain.exponentialRampToValueAtTime(.001,now+1.55);
+      osc.connect(gain);gain.connect(master);osc.start(now);osc.stop(now+1.6);
+      musicTimer=setTimeout(playNote,850);
     }
+    playNote();
+  }
+  function stopMusic(){musicOn=false;clearTimeout(musicTimer);if(master)master.gain.value=0;$("musicBtn").textContent="🔇";}
+  $("musicBtn").onclick=()=>{ if(musicOn) stopMusic(); else { if(master)master.gain.value=.055; startMusic(); } };
 
-    setTimeout(daktiloYaz, 450);
+  $("openLetter").onclick=()=>{
+    startMusic(); show("letter");
+    let i=0; $("letterText").textContent="";
+    (function typeLetter(){
+      if(i<=letter.length){$("letterText").textContent=letter.slice(0,i++);setTimeout(typeLetter,18);}
+      else $("toTimeline").classList.add("show");
+    })();
+  };
+  $("toTimeline").onclick=()=>show("timelineScreen");
+  $("toQuestion").onclick=()=>show("question");
 
-    devam.addEventListener("click", async function () {
-      girisEkrani.classList.remove("aktif");
-      soruEkrani.classList.add("aktif");
+  const noMsgs=["Emin misin? 🥺","Bir daha düşünür müsün? ❤️","Kalbimi kırma lütfen… 💔","Nikâha bu kadar az kalmışken olmaz ki… 🥹","Tamam… Artık Hayır seçeneğini kabul etmiyorum 😄"];
+  let noCount=0, escape=false, lastMove=0;
+  function moveNo(){
+    if(!escape) return;
+    const a=$("choiceArea").getBoundingClientRect(), b=$("no").getBoundingClientRect();
+    $("no").style.transform="none";
+    $("no").style.left=Math.max(5,Math.random()*(a.width-b.width-10))+"px";
+    $("no").style.top=Math.max(5,Math.random()*(a.height-b.height-10))+"px";
+  }
+  $("no").onclick=()=>{
+    if(noCount<noMsgs.length){$("hint").textContent=noMsgs[noCount++];}
+    if(noCount>=noMsgs.length){escape=true;moveNo();}
+  };
+  ["pointermove","touchstart"].forEach(evt=>$("choiceArea").addEventListener(evt,e=>{
+    if(!escape)return; const now=Date.now(); if(now-lastMove<150)return; lastMove=now;
+    const p=evt==="touchstart"?e.touches[0]:e, r=$("no").getBoundingClientRect();
+    if(Math.hypot(p.clientX-(r.left+r.width/2),p.clientY-(r.top+r.height/2))<115)moveNo();
+  },{passive:true}));
 
-      try {
-        muzik.volume = 0.42;
-        await muzik.play();
-        muzikCalabiliyor = true;
-        muzikAcik = true;
-        muzikKontrol.style.display = "block";
-        muzikKontrol.textContent = "🔊";
-      } catch (hata) {
-        muzikCalabiliyor = false;
-        muzikKontrol.style.display = "none";
-      }
+  $("yes").onclick=()=>{show("result");burst();updateCountdown();};
+  $("hug").onclick=()=>{
+    if(navigator.vibrate)navigator.vibrate([80,50,120]);
+    $("hugResult").classList.add("show");$("forever").classList.add("show");burst();
+  };
 
-      if (!ucusDongusu) {
-        ucusDongusu = setInterval(ucanOlustur, 550);
-      }
-    });
+  function updateCountdown(){
+    const target=new Date("2026-08-02T11:15:00+03:00"), now=new Date(), diff=target-now;
+    const abs=Math.abs(diff), d=Math.floor(abs/86400000), h=Math.floor(abs%86400000/3600000), m=Math.floor(abs%3600000/60000), s=Math.floor(abs%60000/1000);
+    $("days").textContent=d;$("hours").textContent=h;$("minutes").textContent=m;$("seconds").textContent=s;
+    $("countTitle").textContent=diff>=0?"Nikâhımıza kalan süre 💍":"Nikâhımızın üzerinden geçen süre ❤️";
+    const firstTouch=new Date("2025-09-16T00:00:00+03:00");
+    const daysSince=Math.max(0,Math.floor((now-firstTouch)/86400000));
+    $("sinceText").textContent=`16 Eylül 2025’te ilk kez elini tuttum. O günden beri ${daysSince} gündür elini bırakmak istemiyorum.`;
+  }
+  setInterval(()=>{if($("result").classList.contains("active"))updateCountdown()},1000);
 
-    muzikKontrol.addEventListener("click", async function () {
-      if (!muzikCalabiliyor) return;
+  function bgItem(){
+    const el=document.createElement("span"), arr=["🤍","❤️","🌼","✨","♡"];
+    el.className="float";el.textContent=arr[Math.floor(Math.random()*arr.length)];
+    el.style.left=Math.random()*100+"vw";el.style.fontSize=(15+Math.random()*22)+"px";
+    el.style.animationDuration=(8+Math.random()*7)+"s";el.style.setProperty("--drift",(Math.random()*140-70)+"px");
+    $("bg").appendChild(el);setTimeout(()=>el.remove(),16000);
+  }
+  setInterval(bgItem,520);for(let i=0;i<12;i++)setTimeout(bgItem,i*180);
 
-      if (muzikAcik) {
-        muzik.pause();
-        muzikAcik = false;
-        muzikKontrol.textContent = "🔇";
-      } else {
-        try {
-          await muzik.play();
-          muzikAcik = true;
-          muzikKontrol.textContent = "🔊";
-        } catch (hata) {}
-      }
-    });
-
-    function rastgeleKonumaKac() {
-      const alan = butonAlani.getBoundingClientRect();
-      const buton = hayir.getBoundingClientRect();
-      const bosluk = 8;
-
-      const maxX = Math.max(bosluk, alan.width - buton.width - bosluk);
-      const maxY = Math.max(bosluk, alan.height - buton.height - bosluk);
-
-      hayir.style.transform = "none";
-      hayir.style.left = Math.floor(bosluk + Math.random() * Math.max(1, maxX - bosluk)) + "px";
-      hayir.style.top = Math.floor(bosluk + Math.random() * Math.max(1, maxY - bosluk)) + "px";
+  function burst(){
+    for(let i=0;i<75;i++){
+      const x=document.createElement("i");x.className="confetti-piece";
+      x.style.left=Math.random()*100+"vw";x.style.background=`hsl(${Math.random()*360} 80% 68%)`;
+      x.style.animationDuration=(2.8+Math.random()*2.5)+"s";x.style.animationDelay=(Math.random()*.6)+"s";
+      $("confetti").appendChild(x);setTimeout(()=>x.remove(),6000);
     }
-
-    function hayiraBasmaDenemesi(event) {
-      if (kacisModu) {
-        event.preventDefault();
-        event.stopPropagation();
-        rastgeleKonumaKac();
-        return;
-      }
-
-      hayirSayaci++;
-      altMetin.textContent =
-        hayirMesajlari[Math.min(hayirSayaci - 1, hayirMesajlari.length - 1)];
-
-      if (hayirSayaci >= hayirMesajlari.length) {
-        kacisModu = true;
-        hayir.textContent = "Yakalayamazsın 😄";
-        rastgeleKonumaKac();
-      }
-    }
-
-    hayir.addEventListener("click", hayiraBasmaDenemesi);
-
-    hayir.addEventListener("touchstart", function (event) {
-      if (kacisModu) {
-        event.preventDefault();
-        event.stopPropagation();
-        rastgeleKonumaKac();
-      }
-    }, { passive: false });
-
-    document.addEventListener("pointermove", function (event) {
-      if (!kacisModu || event.pointerType === "touch") return;
-
-      const simdi = Date.now();
-      if (simdi - sonKacis < 100) return;
-
-      const rect = hayir.getBoundingClientRect();
-      const merkezX = rect.left + rect.width / 2;
-      const merkezY = rect.top + rect.height / 2;
-      const mesafe = Math.hypot(event.clientX - merkezX, event.clientY - merkezY);
-
-      if (mesafe < 115) {
-        sonKacis = simdi;
-        rastgeleKonumaKac();
-      }
-    });
-
-    evet.addEventListener("click", function () {
-      soruEkrani.classList.remove("aktif");
-      sonucEkrani.classList.add("aktif");
-
-      for (let i = 0; i < 55; i++) {
-        setTimeout(ucanOlustur, i * 55);
-      }
-
-      konfetiPatlat();
-    });
-
-    function ucanOlustur() {
-      const eleman = document.createElement("div");
-      const semboller = ["❤️", "💕", "💗", "🤍", "🌼", "🌼", "✨"];
-
-      eleman.className = "ucan";
-      eleman.textContent = semboller[Math.floor(Math.random() * semboller.length)];
-      eleman.style.left = Math.random() * 100 + "vw";
-      eleman.style.fontSize = 19 + Math.random() * 31 + "px";
-      eleman.style.animationDuration = 4.2 + Math.random() * 3 + "s";
-
-      ucusanlar.appendChild(eleman);
-      setTimeout(() => eleman.remove(), 7800);
-    }
-
-    function konfetiPatlat() {
-      const semboller = ["❤️", "🌼", "✨", "💕", "🤍"];
-
-      for (let i = 0; i < 60; i++) {
-        const parca = document.createElement("div");
-        parca.className = "konfeti";
-        parca.textContent = semboller[Math.floor(Math.random() * semboller.length)];
-        parca.style.left = Math.random() * 100 + "vw";
-        parca.style.fontSize = 14 + Math.random() * 22 + "px";
-        parca.style.animationDelay = Math.random() * .8 + "s";
-        parca.style.animationDuration = 2.4 + Math.random() * 1.6 + "s";
-        document.body.appendChild(parca);
-        setTimeout(() => parca.remove(), 5000);
-      }
-    }
-
-    for (let i = 0; i < 16; i++) {
-      setTimeout(ucanOlustur, i * 220);
-    }
-  </script>
+  }
+</script>
 </body>
 </html>
