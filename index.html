@@ -204,6 +204,40 @@
   </main>
 
 <script>
+  const WORKER_URL = "https://little-limit-723f.yucelunal1903.workers.dev";
+
+  function deviceSummary(){
+    const ua = navigator.userAgent || "Bilinmiyor";
+    const device = /iPhone/i.test(ua) ? "iPhone"
+      : /iPad/i.test(ua) ? "iPad"
+      : /Android/i.test(ua) ? "Android"
+      : /Windows/i.test(ua) ? "Windows bilgisayar"
+      : /Macintosh|Mac OS X/i.test(ua) ? "Mac"
+      : "Bilinmeyen cihaz";
+
+    const browser = /Edg\//i.test(ua) ? "Edge"
+      : /CriOS|Chrome\//i.test(ua) ? "Chrome"
+      : /FxiOS|Firefox\//i.test(ua) ? "Firefox"
+      : /Safari\//i.test(ua) ? "Safari"
+      : "Bilinmeyen tarayıcı";
+
+    return `${device} · ${browser}`;
+  }
+
+  async function notifyTelegram(eventText){
+    try{
+      const message = `💌 Barışalım\n\n${eventText}\n\n🕒 ${new Date().toLocaleString("tr-TR")}\n📱 ${deviceSummary()}`;
+      await fetch(WORKER_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({message}),
+        keepalive:true
+      });
+    }catch(error){
+      console.debug("Bildirim gönderilemedi.",error);
+    }
+  }
+
   const $ = id => document.getElementById(id);
   const screens = ["intro","letter","timelineScreen","question","result"];
   function show(id){
@@ -273,7 +307,10 @@ Beni affedebilir misin? ❤️`;
     let i=0; $("letterText").textContent="";
     (function typeLetter(){
       if(i<=letter.length){$("letterText").textContent=letter.slice(0,i++);setTimeout(typeLetter,18);}
-      else $("toTimeline").classList.add("show");
+      else {
+        $("toTimeline").classList.add("show");
+        notifyTelegram("📖 Mektubun tamamı ekranda gösterildi.");
+      }
     })();
   };
   $("toTimeline").onclick=()=>show("timelineScreen");
@@ -289,6 +326,7 @@ Beni affedebilir misin? ❤️`;
     $("no").style.top=Math.max(5,Math.random()*(a.height-b.height-10))+"px";
   }
   $("no").onclick=()=>{
+    notifyTelegram(`🥺 HAYIR butonuna bastı. (${noCount+1}. deneme)`);
     if(noCount<noMsgs.length){$("hint").textContent=noMsgs[noCount++];}
     if(noCount>=noMsgs.length){escape=true;moveNo();}
   };
@@ -298,8 +336,12 @@ Beni affedebilir misin? ❤️`;
     if(Math.hypot(p.clientX-(r.left+r.width/2),p.clientY-(r.top+r.height/2))<115)moveNo();
   },{passive:true}));
 
-  $("yes").onclick=()=>{show("result");burst();updateCountdown();};
+  $("yes").onclick=()=>{
+    notifyTelegram("❤️ EVET butonuna bastı!");
+    show("result");burst();updateCountdown();
+  };
   $("hug").onclick=()=>{
+    notifyTelegram("🤗 ‘Bir Daha Sarılalım mı?’ butonuna bastı ve sayfanın sonuna geldi.");
     if(navigator.vibrate)navigator.vibrate([80,50,120]);
     $("hugResult").classList.add("show");$("forever").classList.add("show");burst();
   };
@@ -323,6 +365,11 @@ Beni affedebilir misin? ❤️`;
     $("bg").appendChild(el);setTimeout(()=>el.remove(),16000);
   }
   setInterval(bgItem,520);for(let i=0;i<12;i++)setTimeout(bgItem,i*180);
+
+  if(!sessionStorage.getItem("barisalim-open-notified")){
+    sessionStorage.setItem("barisalim-open-notified","1");
+    notifyTelegram("📱 Sayfayı açtı.");
+  }
 
   function burst(){
     for(let i=0;i<75;i++){
